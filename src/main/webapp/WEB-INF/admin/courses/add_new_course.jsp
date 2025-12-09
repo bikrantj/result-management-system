@@ -49,7 +49,7 @@
         <% } %>
 
 
-        <form action="${pageContext.request.contextPath}/new-course" method="post" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/admin/courses/new-course" method="post" class="space-y-6">
 
             <!-- Course Name Field -->
             <div>

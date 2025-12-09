@@ -120,15 +120,11 @@
     font-weight: 600;
     color: #1e40af;
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    text-transform: uppercase;
 }
+
 
 .rms-table td:nth-child(2) {
-    font-weight: 600;
-    color: #0ea5e9;
-    font-size: 15px;
-}
-
-.rms-table td:nth-child(3) {
     color: #1f2937;
     font-weight: 500;
 }

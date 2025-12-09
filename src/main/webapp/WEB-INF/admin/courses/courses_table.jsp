@@ -11,7 +11,6 @@
     <table class="rms-table align-middle">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Code</th>
             <th>Name</th>
             <th>Semesters</th>
@@ -22,8 +21,6 @@
         <% if (courses != null && !courses.isEmpty()) {
             for (Course course : courses) { %>
         <tr>
-            <td><%= course.getId() %>
-            </td>
             <td><%= course.getCode() %>
             </td>
             <td><%= course.getName() %>

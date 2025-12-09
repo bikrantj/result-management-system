@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-@WebServlet("/admin/courses/*")
+@WebServlet("/admin/courses/")
 public class ListCourseServlet extends HttpServlet {
 
     @Override
