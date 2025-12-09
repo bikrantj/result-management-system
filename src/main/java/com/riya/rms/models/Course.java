@@ -6,6 +6,16 @@ public class Course {
     private String name;
     private String code;
     private int semesterCount;
+    private int totalStudents;
+
+
+    public int getTotalStudents() {
+        return totalStudents;
+    }
+
+    public void setTotalStudents(int totalStudents) {
+        this.totalStudents = totalStudents;
+    }
 
     public int getSemesterCount() {
         return semesterCount;

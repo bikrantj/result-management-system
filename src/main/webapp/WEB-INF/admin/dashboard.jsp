@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Admin Dashboard</title>
-    <%@ include file="/shared/head.jsp" %>
+    <%@ include file="/WEB-INF/shared/head.jsp" %>
 
 </head>
 
@@ -18,7 +18,7 @@
 <div style="display:flex; min-height:100vh;">
 
     <!-- Sidebar -->
-    <jsp:include page="/shared/sidebar-admin.jsp"/>
+    <jsp:include page="/WEB-INF/shared/sidebar-admin.jsp"/>
 
     <!-- Main Content -->
     <div style="flex:1; background:#f5f5f5;" class="main-content-area">

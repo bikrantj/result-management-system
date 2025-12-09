@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Courses - Admin Panel</title>
-    <%@ include file="/shared/head.jsp" %>
+    <%@ include file="/WEB-INF/shared/head.jsp" %>
 </head>
 
 <body class="bg-gray-50 font-sans antialiased">
@@ -17,7 +17,7 @@
 <div class="flex min-h-screen">
 
     <!-- Sidebar -->
-    <jsp:include page="/shared/sidebar-admin.jsp"/>
+    <jsp:include page="/WEB-INF/shared/sidebar-admin.jsp"/>
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
@@ -31,7 +31,7 @@
                 </div>
 
                 <!-- Add New Course Button -->
-                <a href="${pageContext.request.contextPath}/admin/courses/new-course.jsp"
+                <a href="${pageContext.request.contextPath}/admin/courses/new-course"
                    class="group relative inline-flex items-center justify-center overflow-hidden rounded-xl
                           bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-white font-semibold
                           shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5
@@ -108,7 +108,7 @@
             <!-- Table -->
             <jsp:include page="courses_table.jsp"/>
 
-            
+
         </div>
 
     </main>

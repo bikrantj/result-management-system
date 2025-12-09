@@ -25,7 +25,7 @@ public class Navigator {
                                   Map<String, Object> queryParams) throws IOException {
 
         String queryString = new QueryParamBuilder().build(queryParams);
-        internal_navigateTo(page.getPath() + queryString, req, resp, NavigationType.REDIRECT);
+        internal_navigateTo(page.getPath() + queryString, req, resp, NavigationType.FORWARD);
     }
 
     public static void navigateTo(Pages page,
@@ -39,7 +39,7 @@ public class Navigator {
                                   HttpServletRequest req,
                                   HttpServletResponse resp) throws IOException {
 
-        internal_navigateTo(page.getPath(), req, resp, NavigationType.REDIRECT);
+        internal_navigateTo(page.getPath(), req, resp, NavigationType.FORWARD);
     }
 
     // Will receive the final path with query params appended

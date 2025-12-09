@@ -31,7 +31,7 @@
         <ul class="space-y-2">
 
             <li>
-                <a href="${pageContext.request.contextPath}/admin/dashboard.jsp"
+                <a href="${pageContext.request.contextPath}/WEB-INF/admin/dashboard.jsp"
                    class="group flex items-center px-4 py-3 rounded-xl transition-all duration-200
                    <%= "dashboard".equals(current)
                         ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-semibold border border-blue-100 shadow-sm shadow-blue-100/50"

@@ -15,8 +15,14 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 
-@WebServlet("/course")
-public class CourseServlet extends HttpServlet {
+@WebServlet("/admin/courses/new-course")
+public class NewCourseServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        Navigator.navigateTo(Pages.ADMIN_NEW_COURSE, req, resp);
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)

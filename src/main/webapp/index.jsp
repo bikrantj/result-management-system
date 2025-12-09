@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>Login</title>
-    <%@ include file="/shared/head.jsp" %>
+    <%@ include file="/WEB-INF/shared/head.jsp" %>
 </head>
 
 <body class="bg-light">

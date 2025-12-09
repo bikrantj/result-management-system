@@ -6,6 +6,8 @@ import com.riya.rms.utils.RomanNumbers;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CourseRepository {
     private Connection con;
@@ -35,6 +37,30 @@ public class CourseRepository {
             e.printStackTrace();
         }
         return null;
+    }
+
+    //    TODO: Join courses with student to get
+    public List<Course> findAll() {
+        try {
+            String sql = "SELECT c.*, COUNT(se.student_id) as total_students FROM courses c LEFT JOIN student_enrollments se ON c.id = se.course_id GROUP BY c.id, c.name, c.code, c.semester_count ORDER BY c.id";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            List<Course> courses = new ArrayList<>();
+
+            while (rs.next()) {
+                Course c = new Course();
+                c.setId(rs.getInt("id"));
+                c.setName(rs.getString("name"));
+                c.setCode(rs.getString("code"));
+                c.setSemesterCount(rs.getInt("semester_count"));
+                c.setTotalStudents(rs.getInt("total_students"));
+                courses.add(c);
+            }
+            return courses;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public boolean createCourse(Course course) {
