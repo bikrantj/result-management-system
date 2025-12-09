@@ -1,6 +1,6 @@
-<div class="rms-table-card shadow-sm">
+<div class="rms-table-card">
 
-    <table class="table rms-table align-middle">
+    <table class="rms-table align-middle">
         <thead>
         <tr>
             <th>ID</th>

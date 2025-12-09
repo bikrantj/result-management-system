@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/696d6f56-9522-40f4-9551-471f1c5c2083/console.sql" value="696d6f56-9522-40f4-9551-471f1c5c2083" />
     <file url="file://$PROJECT_DIR$/src/main/java/com/riya/rms/schema.sql" value="696d6f56-9522-40f4-9551-471f1c5c2083" />
   </component>
 </project>

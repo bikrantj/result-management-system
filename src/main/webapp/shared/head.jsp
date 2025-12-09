@@ -6,14 +6,31 @@
 <base href="${pageContext.request.contextPath}/">
 
 <!-- Your global CSS (Bootstrap + your own if any) -->
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/table.css">
+<%--<link rel="stylesheet" href="css/bootstrap.min.css">--%>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/tailwind.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
 
 <!-- optional -->
 
 <!-- Global JS at the top if needed -->
-<script src="js/bootstrap.min.js" defer></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.min.js" defer></script>
 <style>
+    a {
+        text-decoration: none;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    dl, ol, ul {
+        margin: 0;
+        padding: 0;
+    }
+
     .sidebar {
         width: 250px;
         position: fixed;
