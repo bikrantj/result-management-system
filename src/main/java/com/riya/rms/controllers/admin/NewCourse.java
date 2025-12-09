@@ -1,4 +1,4 @@
-package com.riya.rms.controllers;
+package com.riya.rms.controllers.admin;
 
 import com.riya.rms.db.DBConnection;
 import com.riya.rms.models.Course;
@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.Connection;
 
 @WebServlet("/admin/courses/new-course")
-public class NewCourseServlet extends HttpServlet {
+public class NewCourse extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

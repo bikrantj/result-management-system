@@ -1,4 +1,4 @@
-package com.riya.rms.controllers;
+package com.riya.rms.controllers.admin;
 
 import com.riya.rms.utils.Navigator;
 import com.riya.rms.utils.Pages;
