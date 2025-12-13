@@ -1,4 +1,5 @@
-<!-- Remove the outer container div that had min-h-screen -->
+<%--Admin will create new user accounts: for Teachers and Students in this page--%>
+
 <%
     // Extract all message variables at the top
     String errorMessage = (String) session.getAttribute("error");
@@ -8,13 +9,23 @@
     if (errorMessage != null) session.removeAttribute("error");
     if (successMessage != null) session.removeAttribute("success");
 %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students - Admin Panel</title>
+    <%@ include file="/WEB-INF/shared/head.jsp" %>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased flex items-center justify-center min-h-screen">
+
 <div class="w-full max-w-lg bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
     <!-- Header -->
     <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-white">Add New Student</h2>
-                <p class="text-blue-100 text-sm mt-1">Create a new student account</p>
+                <h2 class="text-2xl font-bold text-white">Add New User</h2>
+                <p class="text-blue-100 text-sm mt-1">Create a new user account</p>
             </div>
             <div class="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -49,67 +60,86 @@
         <% } %>
 
 
-        <form action="${pageContext.request.contextPath}/admin/courses/new-course" method="post" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/admin/create-new-user" method="post" class="space-y-6">
 
-            <!-- Course Name Field -->
+
             <div>
-                <label for="courseName" class="block text-sm font-medium text-gray-700 mb-2">
-                    Course Name
+                <label for="role" class="block text-sm font-medium text-gray-700 mb-2">
+                    Role
+                </label>
+                <div class="relative">
+                    <select id="role" name="role"
+                            class="w-full px-4 py-3 border border-gray-200 rounded-xl
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                       focus:border-transparent transition-all duration-200
+                       bg-white appearance-none cursor-pointer
+                       text-gray-700 font-medium
+                       hover:border-gray-300 hover:bg-gray-50
+                       shadow-sm">
+                        <option value="student" class="py-2" selected>Student</option>
+                        <option value="teacher" class="py-2">Teacher</option>
+                    </select>
+                    <!-- Custom dropdown arrow -->
+                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                        <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-200"
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
                 </label>
                 <div class="relative">
                     <input type="text"
-                           name="courseName"
-                           id="courseName"
+                           name="fullName"
+                           id="fullName"
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                       focus:outline-none focus:ring-2 focus:ring-blue-500
                                       focus:border-transparent transition-all duration-200
                                       bg-gray-50 placeholder-gray-400"
-                           placeholder="e.g., Bachelor in Information Technology"
                            required>
 
                 </div>
             </div>
 
-            <!-- Course Code Field -->
             <div>
-                <label for="courseCode" class="block text-sm font-medium text-gray-700 mb-2">
-                    Course Code
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                    Username
                 </label>
                 <div class="relative">
                     <input type="text"
-                           name="courseCode"
-                           id="courseCode"
+                           name="username"
+                           id="username"
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                       focus:outline-none focus:ring-2 focus:ring-blue-500
                                       focus:border-transparent transition-all duration-200
                                       bg-gray-50 placeholder-gray-400 font-mono"
-                           placeholder="e.g., BIT"
                            required>
                 </div>
             </div>
 
-            <!-- Semester Count Field -->
             <div>
-                <label for="semesterCount" class="block text-sm font-medium text-gray-700 mb-2">
-                    Number of Semesters
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                    Default Password
                 </label>
                 <div class="relative">
-                    <input type="number"
-                           name="semesterCount"
-                           id="semesterCount"
+                    <input type="text"
+                           name="password"
+                           id="password"
                            class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                       focus:outline-none focus:ring-2 focus:ring-blue-500
                                       focus:border-transparent transition-all duration-200
                                       bg-gray-50 placeholder-gray-400"
-                           min="1"
-                           max="12"
-                           value="8"
+                           value="12345678"
                            required>
                 </div>
 
             </div>
 
-            <!-- Submit Button -->
             <div class="pt-4">
                 <button type="submit"
                         class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600
@@ -118,7 +148,7 @@
                                    active:scale-[0.98] transition-all duration-200
                                    flex items-center justify-center space-x-2">
 
-                    <span>Add Course</span>
+                    <span>Create Account</span>
                 </button>
             </div>
 
@@ -127,3 +157,5 @@
     </div>
 
 </div>
+</body>
+</html>

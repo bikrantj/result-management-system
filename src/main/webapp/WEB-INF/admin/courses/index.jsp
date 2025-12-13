@@ -1,7 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<%@ page import="com.riya.rms.models.Course" %>
+<%@ page import="java.util.List" %>
 <%
-    // Tell sidebar which menu is active
+    // Extract data from request attributes (set by servlet)
+    List<Course> courses = (List<Course>) request.getAttribute("courses");
+    int totalStudents = (int) request.getAttribute("totalStudents");
+
+    // Set active menu for sidebar
     request.setAttribute("activeMenu", "courses");
 %>
 
@@ -52,7 +58,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Courses</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">12</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= courses.size() %>
+                            </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500
                                     flex items-center justify-center shadow-md">
@@ -66,7 +73,8 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Active Students</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">1,240</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= totalStudents %>
+                            </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500
                                     flex items-center justify-center shadow-md">
@@ -76,21 +84,6 @@
 
                 </div>
 
-                <div class="bg-gradient-to-r from-violet-50 to-purple-50 rounded-2xl p-5 border border-violet-100">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">Avg. Duration</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2">8 Semesters</p>
-                        </div>
-                        <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-500
-                                    flex items-center justify-center shadow-md">
-
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-3">
-                        Most courses follow 4-year structure
-                    </p>
-                </div>
             </div>
         </div>
 

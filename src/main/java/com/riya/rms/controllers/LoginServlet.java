@@ -48,16 +48,16 @@ public class LoginServlet extends HttpServlet {
         session.setAttribute("user", user);
 
         switch (user.getRole()) {
-            case "admin":
+            case ADMIN:
                 System.out.println("Navigating to admin dashboard");
                 Navigator.navigateTo(Pages.ADMIN_DASHBOARD, req, resp);
                 break;
 
-            case "teacher":
+            case TEACHER:
                 Navigator.navigateTo(Pages.TEACHER_DASHBOARD, req, resp);
                 break;
 
-            case "student":
+            case STUDENT:
                 Navigator.navigateTo(Pages.STUDENT_DASHBOARD, req, resp);
                 break;
         }

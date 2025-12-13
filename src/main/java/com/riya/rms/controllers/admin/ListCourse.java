@@ -30,8 +30,17 @@ public class ListCourse extends HttpServlet {
 
 //        Get all the courses
         List<Course> courses = courseRepo.findAll();
-        req.setAttribute("courses", courses);
 
+        req.setAttribute("courses", courses);
+        req.setAttribute("totalStudents", calculateTotalStudents(courses));
         Navigator.navigateTo(Pages.ADMIN_COURSE, req, resp);
+    }
+
+    private int calculateTotalStudents(List<Course> courses) {
+        int total = 0;
+        for (Course course : courses) {
+            total += course.getTotalStudents();
+        }
+        return total;
     }
 }
