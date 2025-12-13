@@ -1,13 +1,16 @@
 package com.riya.rms.repositories;
 
 import com.riya.rms.models.Course;
+import com.riya.rms.models.Semester;
 import com.riya.rms.utils.RomanNumbers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CourseRepository {
     private Connection con;
@@ -41,25 +44,69 @@ public class CourseRepository {
 
     //    TODO: Join courses with student to get
     public List<Course> findAll() {
-        try {
-            String sql = "SELECT c.*, COUNT(se.student_id) as total_students FROM courses c LEFT JOIN student_enrollments se ON c.id = se.course_id GROUP BY c.id, c.name, c.code, c.semester_count ORDER BY c.id";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            List<Course> courses = new ArrayList<>();
+
+        String sql = """
+                    SELECT 
+                        c.id           AS course_id,
+                        c.name         AS course_name,
+                        c.code         AS course_code,
+                        c.semester_count,
+                        COUNT(se.student_id) AS total_students,
+                
+                        s.id           AS semester_id,
+                        s.name         AS semester_name
+                
+                    FROM courses c
+                    LEFT JOIN semesters s 
+                        ON s.course_id = c.id
+                    LEFT JOIN student_enrollments se 
+                        ON se.course_id = c.id
+                
+                    GROUP BY 
+                        c.id, c.name, c.code, c.semester_count,
+                        s.id, s.name
+                
+                    ORDER BY c.id, s.id
+                """;
+
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            Map<Integer, Course> courseMap = new LinkedHashMap<>();
 
             while (rs.next()) {
-                Course c = new Course();
-                c.setId(rs.getInt("id"));
-                c.setName(rs.getString("name"));
-                c.setCode(rs.getString("code"));
-                c.setSemesterCount(rs.getInt("semester_count"));
-                c.setTotalStudents(rs.getInt("total_students"));
-                courses.add(c);
+
+                int courseId = rs.getInt("course_id");
+
+                Course course = courseMap.get(courseId);
+
+                if (course == null) {
+                    course = new Course();
+                    course.setId(courseId);
+                    course.setName(rs.getString("course_name"));
+                    course.setCode(rs.getString("course_code"));
+                    course.setSemesterCount(rs.getInt("semester_count"));
+                    course.setTotalStudents(rs.getInt("total_students"));
+
+                    courseMap.put(courseId, course);
+                }
+
+                int semesterId = rs.getInt("semester_id");
+                if (!rs.wasNull()) {
+                    Semester semester = new Semester();
+                    semester.setId(semesterId);
+                    semester.setName(rs.getString("semester_name"));
+                    semester.setCourseId(courseId);
+
+                    course.addSemester(semester);
+                }
             }
-            return courses;
+
+            return new ArrayList<>(courseMap.values());
+
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return List.of();
         }
     }
 

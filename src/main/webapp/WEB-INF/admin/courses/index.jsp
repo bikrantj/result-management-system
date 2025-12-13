@@ -16,6 +16,7 @@
 <head>
     <title>Courses - Admin Panel</title>
     <%@ include file="/WEB-INF/shared/head.jsp" %>
+    
 </head>
 
 <body class="bg-gray-50 font-sans antialiased">

@@ -10,10 +10,12 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/tailwind.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css">
 
 <!-- optional -->
 
 <!-- Global JS at the top if needed -->
+
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js" defer></script>
 <style>
     a {

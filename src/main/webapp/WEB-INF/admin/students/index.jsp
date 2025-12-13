@@ -2,9 +2,11 @@
 
 <%@ page import="com.riya.rms.models.Course" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.riya.rms.models.User" %>
 <%
     // Extract data from request attributes (set by servlet)
-//    List<Course> courses = (List<Course>) request.getAttribute("students");
+    List<User> students = (List<User>) request.getAttribute("users");
+    List<Course> courses = (List<Course>) request.getAttribute("courses");
 //    int totalStudents = (int) request.getAttribute("totalStudents");
 
     // Set active menu for sidebar
@@ -16,6 +18,21 @@
 <head>
     <title>Students - Admin Panel</title>
     <%@ include file="/WEB-INF/shared/head.jsp" %>
+    <script>
+        const COURSE_SEMESTERS = {
+            <% for (Course c : courses) { %>
+            "<%= c.getId() %>": [
+                <% if (c.getSemesters() != null) {
+                    for (var s : c.getSemesters()) { %>
+                {
+                    id: "<%= s.getId() %>",
+                    name: "<%= s.getName() %>"
+                },
+                <% }} %>
+            ],
+            <% } %>
+        };
+    </script>
 </head>
 
 <body class="bg-gray-50 font-sans antialiased">
@@ -59,7 +76,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Students</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= "ram" %>
+                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= students.size() %>
                             </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500

@@ -1,13 +1,28 @@
 package com.riya.rms.models;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Course {
     private int id;
     private String name;
     private String code;
     private int semesterCount;
     private int totalStudents;
+    private List<Semester> semesters = new ArrayList<>();
 
+    public void addSemester(Semester semester) {
+        this.semesters.add(semester);
+    }
+
+    public List<Semester> getSemesters() {
+        return semesters;
+    }
+
+    public void setSemesters(List<Semester> semesters) {
+        this.semesters = semesters;
+    }
 
     public int getTotalStudents() {
         return totalStudents;

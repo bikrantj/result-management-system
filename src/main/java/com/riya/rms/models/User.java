@@ -9,6 +9,8 @@ public class User {
     private String password;
     private String name;
     private Role role;
+    private Course course;
+    private Semester semester;
 
     public User() {
     }
@@ -51,5 +53,21 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course courseName) {
+        this.course = courseName;
     }
 }
