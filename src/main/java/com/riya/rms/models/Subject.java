@@ -1,24 +1,81 @@
 package com.riya.rms.models;
 
 public class Subject {
+
+    // --- Core DB fields ---
     private int id;
     private String name;
     private String code;
     private int semesterId;
-    private int assignedTeacherId;
+    private Integer assignedTeacherId; // nullable
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // --- Derived / joined fields (read-only usage) ---
+    private String courseName;
+    private String semesterName;
+    private String assignedTeacherName;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    // --- Getters & setters ---
+    public int getId() {
+        return id;
+    }
 
-    public String getCode() { return code; }
-    public void setCode(String code) { this.code = code; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public int getSemesterId() { return semesterId; }
-    public void setSemesterId(int semesterId) { this.semesterId = semesterId; }
+    public String getName() {
+        return name;
+    }
 
-    public int getAssignedTeacherId() { return assignedTeacherId; }
-    public void setAssignedTeacherId(int assignedTeacherId) { this.assignedTeacherId = assignedTeacherId; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public int getSemesterId() {
+        return semesterId;
+    }
+
+    public void setSemesterId(int semesterId) {
+        this.semesterId = semesterId;
+    }
+
+    public Integer getAssignedTeacherId() {
+        return assignedTeacherId;
+    }
+
+    public void setAssignedTeacherId(Integer assignedTeacherId) {
+        this.assignedTeacherId = assignedTeacherId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public String getSemesterName() {
+        return semesterName;
+    }
+
+    public void setSemesterName(String semesterName) {
+        this.semesterName = semesterName;
+    }
+
+    public String getAssignedTeacherName() {
+        return assignedTeacherName;
+    }
+
+    public void setAssignedTeacherName(String assignedTeacherName) {
+        this.assignedTeacherName = assignedTeacherName;
+    }
 }

@@ -61,6 +61,21 @@
                     Courses
                 </a>
             </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/admin/subjects/"
+                   class="group flex items-center px-4 py-3 rounded-xl transition-all duration-200
+                   <%= "subjects".equals(current)
+                        ? "bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 font-semibold border border-blue-100 shadow-sm shadow-blue-100/50"
+                        : "text-gray-600 hover:bg-gray-50/80 hover:text-gray-900 hover:shadow-sm" %>">
+                    <svg class="w-5 h-5 mr-3 <%= "courses".equals(current) ? "text-blue-500" : "text-gray-400 group-hover:text-blue-500" %>"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              stroke-width="<%= "courses".equals(current) ? "2" : "1.5" %>"
+                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    Subjects
+                </a>
+            </li>
 
             <li>
                 <a href="${pageContext.request.contextPath}/admin/students/"

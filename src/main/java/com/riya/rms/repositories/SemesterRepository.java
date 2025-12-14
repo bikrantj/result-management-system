@@ -12,7 +12,7 @@ import java.util.List;
 
 public class SemesterRepository {
 
-    private Connection con;
+    private final Connection con;
 
     public SemesterRepository(Connection con) {
         this.con = con;

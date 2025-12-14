@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CourseRepository {
-    private Connection con;
+    private final Connection con;
 
     public CourseRepository(Connection con) {
         this.con = con;
@@ -54,18 +54,15 @@ public class CourseRepository {
                         COUNT(se.student_id) AS total_students,
                 
                         s.id           AS semester_id,
-                        s.name         AS semester_name
-                
+                        s.name         AS semester_name   
                     FROM courses c
                     LEFT JOIN semesters s 
                         ON s.course_id = c.id
                     LEFT JOIN student_enrollments se 
-                        ON se.course_id = c.id
-                
+                        ON se.course_id = c.id                
                     GROUP BY 
                         c.id, c.name, c.code, c.semester_count,
-                        s.id, s.name
-                
+                        s.id, s.name               
                     ORDER BY c.id, s.id
                 """;
 

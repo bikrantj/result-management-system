@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRepository {
-    private Connection con;
+    private final Connection con;
 
     public UserRepository(Connection con) {
         this.con = con;

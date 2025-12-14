@@ -55,4 +55,8 @@ document.addEventListener("DOMContentLoaded", function () {
         loadSemesters(this.value);
     });
 
+    if (courseSelect.value) {
+        loadSemesters(courseSelect.value);
+    }
+
 });
