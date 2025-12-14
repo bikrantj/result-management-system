@@ -87,6 +87,21 @@ public class UserRepository {
         return null;
     }
 
+    public void updateUser(User user) throws Exception {
+        String sql = """
+                    UPDATE users
+                    SET username = ?, name = ?
+                    WHERE id = ?
+                """;
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getName());
+            ps.setInt(3, user.getId());
+            ps.executeUpdate();
+        }
+    }
+
     public List<User> findAll() {
         // Implementation for fetching all users can be added here
         try {

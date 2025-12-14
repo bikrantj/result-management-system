@@ -60,7 +60,7 @@
         <% } %>
 
 
-        <form action="${pageContext.request.contextPath}/admin/create-new-user" method="post" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/admin/user" method="post" class="space-y-6">
 
 
             <div>

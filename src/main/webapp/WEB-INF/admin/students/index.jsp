@@ -55,7 +55,7 @@
 
                 <!-- Add New Course Button -->
                 <%--            TODO:    Navigate to /admin/user/new-user?role=student --%>
-                <a href="${pageContext.request.contextPath}/admin/create-new-user?role=student"
+                <a href="${pageContext.request.contextPath}/admin/user"
                    class="group relative inline-flex items-center justify-center overflow-hidden rounded-xl
                           bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-white font-semibold
                           shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5

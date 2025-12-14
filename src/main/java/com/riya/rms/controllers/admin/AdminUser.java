@@ -1,8 +1,6 @@
 package com.riya.rms.controllers.admin;
 
-
 import com.riya.rms.db.DBConnection;
-import com.riya.rms.models.User;
 import com.riya.rms.repositories.UserRepository;
 import com.riya.rms.utils.Navigator;
 import com.riya.rms.utils.Pages;
@@ -17,9 +15,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 
-@WebServlet("/admin/create-new-user")
-public class CreateNewUser extends HttpServlet {
-
+@WebServlet("/admin/user")
+public class AdminUser extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -48,7 +45,7 @@ public class CreateNewUser extends HttpServlet {
         HttpSession session = req.getSession();
 
 //        Check if user already exists
-        User user = userRepo.findByUsername(username);
+        com.riya.rms.models.User user = userRepo.findByUsername(username);
 
         if (user != null) {
 //            Set error message and return
@@ -58,7 +55,7 @@ public class CreateNewUser extends HttpServlet {
             return;
         }
 // If user doesn't exist, create new user
-        user = new User();
+        user = new com.riya.rms.models.User();
         user.setName(fullName);
         user.setUsername(username);
 //        TODO: Hash password before saving
@@ -82,5 +79,6 @@ public class CreateNewUser extends HttpServlet {
         session.setAttribute("success", "User created successfully.");
         Navigator.navigateTo(Pages.ADMIN_CREATE_NEW_USER, req, resp);
     }
+
 
 }

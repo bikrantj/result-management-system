@@ -28,7 +28,7 @@
             </div>
 
             <!-- Modal Body -->
-            <form method="post" action="${pageContext.request.contextPath}/admin/students/update">
+            <form method="post" action="${pageContext.request.contextPath}/admin/students/">
                 <div class="modal-body space-y-5 p-6 bg-gradient-to-b from-white to-gray-50/30">
 
                     <input type="hidden" name="id" id="editStudentId"/>
@@ -62,7 +62,7 @@
                             Full Name
                         </label>
                         <div class="relative">
-                            <input type="text" name="name" id="editName"
+                            <input type="text" name="fullName" id="editName"
                                    class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                           focus:outline-none focus:ring-2 focus:ring-blue-500
                                           focus:border-transparent transition-all duration-200
@@ -84,7 +84,7 @@
                             Course
                         </label>
                         <div class="relative">
-                            <select name="course" id="editCourse"
+                            <select name="courseId" id="editCourse"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                            focus:outline-none focus:ring-2 focus:ring-blue-500
                                            focus:border-transparent transition-all duration-200
@@ -114,7 +114,7 @@
                             Semester
                         </label>
                         <div class="relative">
-                            <select name="semester" id="editSemester"
+                            <select name="semesterId" id="editSemester"
                                     class="w-full px-4 py-3 border border-gray-200 rounded-xl
                                            focus:outline-none focus:ring-2 focus:ring-blue-500
                                            focus:border-transparent transition-all duration-200

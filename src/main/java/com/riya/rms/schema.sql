@@ -1,3 +1,9 @@
+DROP DATABASE IF EXISTS rmsdb;
+
+CREATE DATABASE rmsdb;
+
+USE rmsdb;
+
 CREATE TABLE users
 (
     id         INT PRIMARY KEY AUTO_INCREMENT,
@@ -38,14 +44,21 @@ CREATE TABLE subjects
 
 CREATE TABLE student_enrollments
 (
-    id                  INT PRIMARY KEY AUTO_INCREMENT,
-    student_id          INT,
-    course_id           INT,
-    current_semester_id INT,
-    FOREIGN KEY (student_id) REFERENCES users (id),
-    FOREIGN KEY (course_id) REFERENCES courses (id),
-    FOREIGN KEY (current_semester_id) REFERENCES semesters (id)
+    student_id          INT PRIMARY KEY,
+    course_id           INT NOT NULL,
+    current_semester_id INT NOT NULL,
+
+    CONSTRAINT fk_enrollment_student
+        FOREIGN KEY (student_id) REFERENCES users (id)
+            ON DELETE CASCADE,
+
+    CONSTRAINT fk_enrollment_course
+        FOREIGN KEY (course_id) REFERENCES courses (id),
+
+    CONSTRAINT fk_enrollment_semester
+        FOREIGN KEY (current_semester_id) REFERENCES semesters (id)
 );
+
 
 CREATE TABLE exams
 (
