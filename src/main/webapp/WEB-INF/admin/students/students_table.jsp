@@ -58,8 +58,8 @@
         } else { %>
         <tr>
             <td colspan="5" class="text-center py-8 text-gray-500">
-                No courses found. <a href="${pageContext.request.contextPath}/WEB-INF/admin/courses/new-course.jsp"
-                                     class="text-blue-600 hover:underline">Create your first user</a>
+                No students found. <a href="${pageContext.request.contextPath}/WEB-INF/admin/courses/new-course.jsp"
+                                      class="text-blue-600 hover:underline">Create your first user</a>
             </td>
         </tr>
         <% } %>

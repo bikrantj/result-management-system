@@ -16,6 +16,49 @@ public class SubjectRepository {
         this.con = con;
     }
 
+    public List<Subject> findByTeacherId(int teacherId) {
+
+        String sql = """
+                    SELECT
+                        sub.id,
+                        sub.name,
+                        sub.code,
+                
+                        s.name   AS semester_name,
+                        c.code   AS course_code
+                    FROM subjects sub
+                    JOIN semesters s ON s.id = sub.semester_id
+                    JOIN courses c   ON c.id = s.course_id
+                    WHERE sub.assigned_teacher_id = ?
+                    ORDER BY c.id, s.id, sub.id
+                """;
+
+        List<Subject> list = new ArrayList<>();
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, teacherId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Subject sub = new Subject();
+                    sub.setId(rs.getInt("id"));
+                    sub.setName(rs.getString("name"));
+                    sub.setCode(rs.getString("code"));
+
+                    // derived fields
+                    sub.setSemesterName(rs.getString("semester_name"));
+                    sub.setCourseName(rs.getString("course_code"));
+
+                    list.add(sub);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
     // Create new subject
     public void create(Subject subject) throws Exception {
         String sql = """

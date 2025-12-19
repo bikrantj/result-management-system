@@ -13,13 +13,12 @@
     <table class="rms-table align-middle">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Code</th>
             <th>Name</th>
             <th>Course</th>
             <th>Semester</th>
             <th>Assigned Teacher</th>
-            <th>Actions</th>
+            <%--            <th>Actions</th>--%>
         </tr>
         </thead>
 
@@ -28,8 +27,7 @@
             for (Subject subject : subjects) { %>
 
         <tr>
-            <td><%= subject.getId() %>
-            </td>
+
 
             <td><%= subject.getCode() %>
             </td>
@@ -49,23 +47,23 @@
                         : "Not Assigned" %>
             </td>
 
-            <td>
-                <div class="flex gap-2">
-                    <button
-                            class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm
-                                   hover:bg-blue-100 transition-colors edit-subject-btn"
-                            data-id="<%= subject.getId() %>">
-                        Edit
-                    </button>
+            <%--            <td>--%>
+            <%--                <div class="flex gap-2">--%>
+            <%--                    <button--%>
+            <%--                            class="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm--%>
+            <%--                                   hover:bg-blue-100 transition-colors edit-subject-btn"--%>
+            <%--                            data-id="<%= subject.getId() %>">--%>
+            <%--                        Edit--%>
+            <%--                    </button>--%>
 
-                    <button
-                            class="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-sm
-                                   hover:bg-red-100 transition-colors delete-subject-btn"
-                            data-id="<%= subject.getId() %>">
-                        Delete
-                    </button>
-                </div>
-            </td>
+            <%--                    <button--%>
+            <%--                            class="px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-sm--%>
+            <%--                                   hover:bg-red-100 transition-colors delete-subject-btn"--%>
+            <%--                            data-id="<%= subject.getId() %>">--%>
+            <%--                        Delete--%>
+            <%--                    </button>--%>
+            <%--                </div>--%>
+            <%--            </td>--%>
         </tr>
 
         <% }

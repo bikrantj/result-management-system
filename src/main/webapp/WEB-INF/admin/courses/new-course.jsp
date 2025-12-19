@@ -25,7 +25,7 @@
         <!-- Simple Header with Back Button -->
         <div class="mb-6">
             <div class="flex items-center gap-4">
-                <a href="${pageContext.request.contextPath}/admin/courses">
+                <a href="${pageContext.request.contextPath}/admin/courses/">
 
                     <button
                             class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700

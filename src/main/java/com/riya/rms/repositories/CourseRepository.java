@@ -2,11 +2,13 @@ package com.riya.rms.repositories;
 
 import com.riya.rms.models.Course;
 import com.riya.rms.models.Semester;
+import com.riya.rms.models.Subject;
 import com.riya.rms.utils.RomanNumbers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,24 +48,22 @@ public class CourseRepository {
     public List<Course> findAll() {
 
         String sql = """
-                    SELECT 
-                        c.id           AS course_id,
-                        c.name         AS course_name,
-                        c.code         AS course_code,
+                    SELECT
+                        c.id   AS course_id,
+                        c.name AS course_name,
+                        c.code AS course_code,
                         c.semester_count,
-                        COUNT(se.student_id) AS total_students,
                 
-                        s.id           AS semester_id,
-                        s.name         AS semester_name   
+                        s.id   AS semester_id,
+                        s.name AS semester_name,
+                
+                        sub.id   AS subject_id,
+                        sub.name AS subject_name,
+                        sub.code AS subject_code
                     FROM courses c
-                    LEFT JOIN semesters s 
-                        ON s.course_id = c.id
-                    LEFT JOIN student_enrollments se 
-                        ON se.course_id = c.id                
-                    GROUP BY 
-                        c.id, c.name, c.code, c.semester_count,
-                        s.id, s.name               
-                    ORDER BY c.id, s.id
+                    LEFT JOIN semesters s ON s.course_id = c.id
+                    LEFT JOIN subjects sub ON sub.semester_id = s.id
+                    ORDER BY c.id, s.id, sub.id
                 """;
 
         try (PreparedStatement ps = con.prepareStatement(sql);
@@ -76,36 +76,59 @@ public class CourseRepository {
                 int courseId = rs.getInt("course_id");
 
                 Course course = courseMap.get(courseId);
-
                 if (course == null) {
                     course = new Course();
                     course.setId(courseId);
                     course.setName(rs.getString("course_name"));
                     course.setCode(rs.getString("course_code"));
                     course.setSemesterCount(rs.getInt("semester_count"));
-                    course.setTotalStudents(rs.getInt("total_students"));
-
                     courseMap.put(courseId, course);
                 }
 
                 int semesterId = rs.getInt("semester_id");
-                if (!rs.wasNull()) {
-                    Semester semester = new Semester();
-                    semester.setId(semesterId);
-                    semester.setName(rs.getString("semester_name"));
-                    semester.setCourseId(courseId);
+                Semester semester = null;
 
-                    course.addSemester(semester);
+                if (!rs.wasNull()) {
+
+                    // 🔹 Find existing semester
+                    for (Semester s : course.getSemesters()) {
+                        if (s.getId() == semesterId) {
+                            semester = s;
+                            break;
+                        }
+                    }
+
+                    // 🔹 Create if not exists
+                    if (semester == null) {
+                        semester = new Semester();
+                        semester.setId(semesterId);
+                        semester.setName(rs.getString("semester_name"));
+                        semester.setCourseId(courseId);
+                        course.addSemester(semester);
+                    }
+                }
+
+                int subjectId = rs.getInt("subject_id");
+                if (semester != null && !rs.wasNull()) {
+
+                    Subject subject = new Subject();
+                    subject.setId(subjectId);
+                    subject.setName(rs.getString("subject_name"));
+                    subject.setCode(rs.getString("subject_code"));
+                    subject.setSemesterId(semesterId);
+
+                    semester.getSubjects().add(subject);
                 }
             }
 
             return new ArrayList<>(courseMap.values());
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return List.of();
         }
     }
+
 
     public boolean createCourse(Course course) {
 

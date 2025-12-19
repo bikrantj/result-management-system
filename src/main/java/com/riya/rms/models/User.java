@@ -11,8 +11,17 @@ public class User {
     private Role role;
     private Course course;
     private Semester semester;
+    private Subject subject;
 
     public User() {
+    }
+
+    public Subject getSubject() {
+        return subject;
+    }
+
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     public int getId() {

@@ -3,36 +3,49 @@
 <%@ page import="com.riya.rms.models.Course" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.riya.rms.models.User" %>
+<%@ page import="com.riya.rms.models.Semester" %>
+<%@ page import="com.riya.rms.models.Subject" %>
 <%
     // Extract data from request attributes (set by servlet)
-    List<User> students = (List<User>) request.getAttribute("users");
+    List<User> teachers = (List<User>) request.getAttribute("teachers");
     List<Course> courses = (List<Course>) request.getAttribute("courses");
+    List<Subject> subjects = (List<Subject>) request.getAttribute("subjects");
+//    List<Semester> semesters = (List<Semester>) request.getAttribute("semesters");
 //    int totalStudents = (int) request.getAttribute("totalStudents");
 
     // Set active menu for sidebar
-    request.setAttribute("activeMenu", "students");
+    request.setAttribute("activeMenu", "teachers");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Students - Admin Panel</title>
+    <title>Teachers - Admin Panel</title>
     <%@ include file="/WEB-INF/shared/head.jsp" %>
     <script>
-        const COURSE_SEMESTERS = {
+        const COURSE_DATA = {
             <% for (Course c : courses) { %>
-            "<%= c.getId() %>": [
-                <% if (c.getSemesters() != null) {
-                    for (var s : c.getSemesters()) { %>
-                {
-                    id: "<%= s.getId() %>",
-                    name: "<%= s.getName() %>"
-                },
-                <% }} %>
-            ],
+            "<%= c.getId() %>": {
+                semesters: {
+                    <% for (Semester s : c.getSemesters()) { %>
+                    "<%= s.getId() %>": {
+                        name: "<%= s.getName() %>",
+                        subjects: [
+                            <% for (Subject sub : s.getSubjects()) { %>
+                            {
+                                id: "<%= sub.getId() %>",
+                                name: "<%= sub.getName() %>"
+                            },
+                            <% } %>
+                        ]
+                    },
+                    <% } %>
+                }
+            },
             <% } %>
         };
     </script>
+
 </head>
 
 <body class="bg-gray-50 font-sans antialiased">
@@ -49,8 +62,8 @@
         <div class="mb-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Student Management</h1>
-                    <p class="text-gray-600">Manage all students and their details in one place</p>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Teacher Management</h1>
+                    <p class="text-gray-600">Manage all teachers and their details in one place</p>
                 </div>
 
                 <!-- Add New Course Button -->
@@ -66,7 +79,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M12 4v16m8-8H4"></path>
                     </svg>
-                    Add new Student
+                    Add new Teacher
                 </a>
             </div>
 
@@ -75,8 +88,8 @@
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl px-4 py-3 border border-blue-100">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-600">Total Students</p>
-                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= students.size() %>
+                            <p class="text-sm font-medium text-gray-600">Total Teachers</p>
+                            <p class="text-3xl font-bold text-gray-900 mt-2"><%= teachers.size() %>
                             </p>
                         </div>
                         <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500
@@ -96,19 +109,19 @@
             </div>
         </div>
 
-        <!-- Students Table Section -->
+        <!-- Teachers Table Section -->
         <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-1">
             <div class="p-5 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h2 class="text-lg font-semibold text-gray-900">All Students</h2>
-                        <p class="text-sm text-gray-600 mt-1">List of all available students with details</p>
+                        <h2 class="text-lg font-semibold text-gray-900">All Teachers</h2>
+                        <p class="text-sm text-gray-600 mt-1">List of all available teachers with details</p>
                     </div>
                 </div>
             </div>
 
             <!-- Table -->
-            <jsp:include page="students_table.jsp"/>
+            <jsp:include page="teachers_table.jsp"/>
 
 
         </div>

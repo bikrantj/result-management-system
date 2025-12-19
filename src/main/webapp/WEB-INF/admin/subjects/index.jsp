@@ -1,6 +1,9 @@
+<%@ page import="com.riya.rms.models.Subject" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
+    List<Subject> subjects = (List<Subject>) request.getAttribute("subjects");
     // Set active menu for sidebar
     request.setAttribute("activeMenu", "subjects");
 %>
@@ -28,7 +31,7 @@
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">Subject Management <span
-                            class="text-xl text-blue-600">(3 subjects)</span></h1>
+                            class="text-xl text-blue-600">(<%=subjects.size()%> subjects)</span></h1>
                     <p class="text-gray-600">Manage all subjects and their assignments in one place</p>
                 </div>
 
