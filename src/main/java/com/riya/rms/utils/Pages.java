@@ -5,6 +5,7 @@ public enum Pages {
 
 
     TEACHER_DASHBOARD("/WEB-INF/teacher/dashboard.jsp"),
+    TEACHER_EXAM_MARKS("/WEB-INF/teacher/exam-marks.jsp"),
     STUDENT_DASHBOARD("/WEB-INF/student/dashboard.jsp"),
 
 

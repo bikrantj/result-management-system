@@ -36,7 +36,24 @@
     <jsp:include page="/WEB-INF/shared/sidebar-admin.jsp"/>
 
     <main class="flex-1 p-6">
+        <%
+            String success = (String) session.getAttribute("success");
+            if (success != null) {
+                session.removeAttribute("success");
+        %>
+        <div class="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
+            <%= success %>
+        </div>
+        <% }
 
+            String error = (String) session.getAttribute("error");
+            if (error != null) {
+                session.removeAttribute("error");
+        %>
+        <div class="mt-4 p-4 bg-red-100 text-red-800 rounded-lg">
+            <%= error %>
+        </div>
+        <% } %>
         <!-- Header -->
         <div class="mb-8 flex justify-between items-center">
             <div>

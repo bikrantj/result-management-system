@@ -12,6 +12,25 @@ public class Exam {
     // Optional (for views)
     private String courseCode;
     private String semesterName;
+    private String subjectName;
+
+    private boolean isPublished;
+
+    public boolean isPublished() {
+        return isPublished;
+    }
+
+    public void setPublished(boolean published) {
+        isPublished = published;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
 
     public String getCourseName() {
         return courseName;
