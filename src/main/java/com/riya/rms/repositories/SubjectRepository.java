@@ -16,6 +16,20 @@ public class SubjectRepository {
         this.con = con;
     }
 
+    public int countSubjects() {
+        String sql = "SELECT COUNT(*) FROM subjects";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public List<Subject> findByTeacherId(int teacherId) {
 
         String sql = """

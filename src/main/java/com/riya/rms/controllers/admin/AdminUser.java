@@ -1,6 +1,7 @@
 package com.riya.rms.controllers.admin;
 
 import com.riya.rms.db.DBConnection;
+import com.riya.rms.models.User;
 import com.riya.rms.repositories.UserRepository;
 import com.riya.rms.utils.Navigator;
 import com.riya.rms.utils.Pages;
@@ -45,7 +46,7 @@ public class AdminUser extends HttpServlet {
         HttpSession session = req.getSession();
 
 //        Check if user already exists
-        com.riya.rms.models.User user = userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
 
         if (user != null) {
 //            Set error message and return
@@ -55,7 +56,7 @@ public class AdminUser extends HttpServlet {
             return;
         }
 // If user doesn't exist, create new user
-        user = new com.riya.rms.models.User();
+        user = new User();
         user.setName(fullName);
         user.setUsername(username);
 //        TODO: Hash password before saving

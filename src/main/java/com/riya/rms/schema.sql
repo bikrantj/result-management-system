@@ -65,9 +65,12 @@ CREATE TABLE exams
     id           INT PRIMARY KEY AUTO_INCREMENT,
     name         VARCHAR(100) NOT NULL, /* Mid Term, Final Board */
     date         DATE,
-    is_published BOOLEAN DEFAULT FALSE,
+    full_marks   INT          NOT NULL,
+    is_published BOOLEAN   DEFAULT FALSE,
     course_id    INT,
     semester_id  INT,
+    created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (course_id) REFERENCES courses (id),
     FOREIGN KEY (semester_id) REFERENCES semesters (id)
 );

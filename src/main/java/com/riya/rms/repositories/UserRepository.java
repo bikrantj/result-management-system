@@ -2,7 +2,6 @@ package com.riya.rms.repositories;
 
 import com.riya.rms.models.Course;
 import com.riya.rms.models.Semester;
-import com.riya.rms.models.TeacherView;
 import com.riya.rms.models.User;
 import com.riya.rms.utils.Role;
 
@@ -104,68 +103,32 @@ public class UserRepository {
         }
     }
 
-    public List<TeacherView> findAllTeachersWithSubjects() {
-
-        String sql = """
-                    SELECT
-                        u.id        AS teacher_id,
-                        u.username,
-                        u.name      AS full_name,
-                
-                        c.id        AS course_id,
-                        c.code      AS course_code,
-                
-                        s.id        AS semester_id,
-                        s.name      AS semester_name,
-                
-                        sub.id      AS subject_id,
-                        sub.name    AS subject_name
-                    FROM users u
-                    LEFT JOIN subjects sub
-                        ON sub.assigned_teacher_id = u.id
-                    LEFT JOIN semesters s
-                        ON s.id = sub.semester_id
-                    LEFT JOIN courses c
-                        ON c.id = s.course_id
-                    WHERE u.role = 'TEACHER'
-                    ORDER BY u.id
-                """;
-
-        List<TeacherView> list = new ArrayList<>();
-
+    public int countTeachers() {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = 'TEACHER'";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-
-                TeacherView tv = new TeacherView();
-
-                tv.setId(rs.getInt("teacher_id"));
-                tv.setUsername(rs.getString("username"));
-                tv.setFullName(rs.getString("full_name"));
-
-                // ✅ SAFE nullable reads
-                Integer courseId = (Integer) rs.getObject("course_id");
-                Integer semesterId = (Integer) rs.getObject("semester_id");
-                Integer subjectId = (Integer) rs.getObject("subject_id");
-
-                tv.setCourseId(courseId);
-                tv.setCourseCode(rs.getString("course_code"));
-
-                tv.setSemesterId(semesterId);
-                tv.setSemesterName(rs.getString("semester_name"));
-
-                tv.setSubjectId(subjectId);
-                tv.setSubjectName(rs.getString("subject_name"));
-
-                list.add(tv);
+            if (rs.next()) {
+                return rs.getInt(1);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
+    }
 
-        return list;
+    public int countStudents() {
+        String sql = "SELECT COUNT(*) FROM users WHERE role = 'STUDENT'";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
 

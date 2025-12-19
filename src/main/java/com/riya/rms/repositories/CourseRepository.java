@@ -44,6 +44,20 @@ public class CourseRepository {
         return null;
     }
 
+    public int countCourses() {
+        String sql = "SELECT COUNT(*) FROM courses";
+        try (PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     //    TODO: Join courses with student to get
     public List<Course> findAll() {
 
@@ -54,15 +68,28 @@ public class CourseRepository {
                         c.code AS course_code,
                         c.semester_count,
                 
+                        COALESCE(sc.total_students, 0) AS total_students,
+                
                         s.id   AS semester_id,
                         s.name AS semester_name,
                 
                         sub.id   AS subject_id,
                         sub.name AS subject_name,
                         sub.code AS subject_code
+                
                     FROM courses c
+                
+                    LEFT JOIN (
+                        SELECT
+                            e.course_id,
+                            COUNT(DISTINCT e.student_id) AS total_students
+                        FROM student_enrollments e
+                        GROUP BY e.course_id
+                    ) sc ON sc.course_id = c.id
+                
                     LEFT JOIN semesters s ON s.course_id = c.id
                     LEFT JOIN subjects sub ON sub.semester_id = s.id
+                
                     ORDER BY c.id, s.id, sub.id
                 """;
 
@@ -82,6 +109,8 @@ public class CourseRepository {
                     course.setName(rs.getString("course_name"));
                     course.setCode(rs.getString("course_code"));
                     course.setSemesterCount(rs.getInt("semester_count"));
+                    course.setTotalStudents(rs.getInt("total_students"));
+
                     courseMap.put(courseId, course);
                 }
 

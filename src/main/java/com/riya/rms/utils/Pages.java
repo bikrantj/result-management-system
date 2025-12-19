@@ -15,6 +15,7 @@ public enum Pages {
     ADMIN_CREATE_NEW_USER("/WEB-INF/admin/create-new-user.jsp"),
     ADMIN_SUBJECTS("/WEB-INF/admin/subjects/index.jsp"),
     ADMIN_TEACHER("/WEB-INF/admin/teachers/index.jsp"),
+    ADMIN_EXAMS("/WEB-INF/admin/exams/index.jsp"),
     ADMIN_STUDENT("/WEB-INF/admin/students/index.jsp");
 
     private final String path;

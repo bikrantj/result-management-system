@@ -1,4 +1,25 @@
+<%@ page import="com.riya.rms.models.User" %>
 <%@ page isELIgnored="false" %>
+<%
+    User loggedUser = (User) session.getAttribute("user");
+
+    if (loggedUser != null) {
+        switch (loggedUser.getRole()) {
+            case ADMIN:
+                response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+                break;
+
+            case TEACHER:
+                response.sendRedirect(request.getContextPath() + "/teacher/dashboard");
+                break;
+
+            case STUDENT:
+                response.sendRedirect(request.getContextPath() + "/student/dashboard");
+                break;
+        }
+        return;
+    }
+%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
