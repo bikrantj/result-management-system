@@ -30,4 +30,5 @@ public class AdminSubject extends HttpServlet {
         Navigator.navigateTo(Pages.ADMIN_SUBJECTS, req, res);
     }
 
+
 }

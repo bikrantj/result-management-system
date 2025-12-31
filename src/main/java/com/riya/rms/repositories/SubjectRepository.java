@@ -30,6 +30,17 @@ public class SubjectRepository {
         return 0;
     }
 
+    public void deleteById(String subjectId) {
+        String sql = "DELETE FROM subjects WHERE id = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, Integer.parseInt(subjectId));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete subject", e);
+        }
+    }
+
     public List<Subject> findByTeacherId(int teacherId) {
 
         String sql = """

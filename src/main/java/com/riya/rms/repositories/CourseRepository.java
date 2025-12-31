@@ -58,6 +58,16 @@ public class CourseRepository {
         return 0;
     }
 
+    public void deleteById(int courseId) {
+        String sql = "DELETE FROM courses WHERE id = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, courseId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     //    TODO: Join courses with student to get
     public List<Course> findAll() {
 

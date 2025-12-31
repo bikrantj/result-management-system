@@ -19,6 +19,18 @@ public class UserRepository {
         this.con = con;
     }
 
+    public void deleteById(String studentId) {
+
+        String sql = "DELETE FROM users WHERE id = ? ";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, Integer.parseInt(studentId));
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to delete student", e);
+        }
+    }
+
     public boolean createUser(User user) {
         try {
             String sql = "INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)";

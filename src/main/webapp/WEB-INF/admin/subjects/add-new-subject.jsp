@@ -157,7 +157,7 @@
                                            focus:outline-none focus:ring-2 focus:ring-blue-500
                                            focus:border-transparent transition-all duration-200
                                            bg-white appearance-none cursor-pointer
-                                           text-gray-700 font-medium pr-10">
+                                           text-gray-700 font-medium pr-10" required>
                                     <% if (!courses.isEmpty()) {
                                         for (Course c : courses) { %>
 
@@ -195,7 +195,7 @@
                                            focus:outline-none focus:ring-2 focus:ring-blue-500
                                            focus:border-transparent transition-all duration-200
                                            bg-white appearance-none cursor-pointer
-                                           text-gray-700 font-medium pr-10">
+                                           text-gray-700 font-medium pr-10" required>
                                     <option value="">-- Select Semester --</option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
@@ -219,7 +219,10 @@
                                            focus:outline-none focus:ring-2 focus:ring-blue-500
                                            focus:border-transparent transition-all duration-200
                                            bg-white appearance-none cursor-pointer
-                                           text-gray-700 font-medium pr-10">
+                                           text-gray-700 font-medium pr-10" required>
+                                    <option value="" disabled selected>
+                                        Select a Teacher
+                                    </option>
                                     <% if (teachers != null && !teachers.isEmpty()) {
                                         for (User t : teachers) { %>
 

@@ -28,7 +28,8 @@ CREATE TABLE semesters
     id        INT PRIMARY KEY AUTO_INCREMENT,
     name      VARCHAR(50) NOT NULL, /* e.g., I, II, III */
     course_id INT,
-    FOREIGN KEY (course_id) REFERENCES courses (id)
+    FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE subjects
@@ -38,7 +39,7 @@ CREATE TABLE subjects
     code                VARCHAR(20),
     semester_id         INT,
     assigned_teacher_id INT,
-    FOREIGN KEY (semester_id) REFERENCES semesters (id),
+    FOREIGN KEY (semester_id) REFERENCES semesters (id) ON DELETE CASCADE,
     FOREIGN KEY (assigned_teacher_id) REFERENCES users (id)
 );
 
@@ -53,10 +54,11 @@ CREATE TABLE student_enrollments
             ON DELETE CASCADE,
 
     CONSTRAINT fk_enrollment_course
-        FOREIGN KEY (course_id) REFERENCES courses (id),
+        FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE,
 
     CONSTRAINT fk_enrollment_semester
-        FOREIGN KEY (current_semester_id) REFERENCES semesters (id)
+        FOREIGN KEY (current_semester_id) REFERENCES semesters (id) ON DELETE CASCADE
+
 );
 
 
@@ -71,8 +73,10 @@ CREATE TABLE exams
     semester_id  INT,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (course_id) REFERENCES courses (id),
-    FOREIGN KEY (semester_id) REFERENCES semesters (id)
+    FOREIGN KEY (course_id) REFERENCES courses (id) ON DELETE CASCADE,
+
+    FOREIGN KEY (semester_id) REFERENCES semesters (id) ON DELETE CASCADE
+
 );
 
 CREATE TABLE marks
@@ -83,9 +87,9 @@ CREATE TABLE marks
     subject_id     INT,
     marks_obtained DECIMAL(5, 2),
     total_marks    DECIMAL(5, 2) DEFAULT 100.00,
-    FOREIGN KEY (exam_id) REFERENCES exams (id),
-    FOREIGN KEY (student_id) REFERENCES users (id),
-    FOREIGN KEY (subject_id) REFERENCES subjects (id),
+    FOREIGN KEY (exam_id) REFERENCES exams (id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE,
     UNIQUE KEY unique_result (exam_id, student_id, subject_id)
 );
 

@@ -31,28 +31,54 @@
             <td><%= teacher.getRole() %>
             </td>
 
-            <td>
-                <button
-                        type="button"
-                        style="margin-right: 10px;"
-                        class="edit-teacher-btn text-blue-500 hover:text-blue-800"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editTeacherModal"
+            <td class="text-center">
+                <div class="flex gap-3 justify-center">
 
-                        data-id="<%= teacher.getId() %>"
-                        data-username="<%= teacher.getUsername() %>"
-                        data-name="<%= teacher.getName() %>"
-                        data-course-id="<%= (teacher.getCourse() != null) ? teacher.getCourse().getId() : "" %>"
-                        data-semester-id="<%= (teacher.getSemester() != null) ? teacher.getSemester().getId() : "" %>"
-                        data-subject-id="<%= (teacher.getSubject() != null) ? teacher.getSubject().getId() : "" %>">
+                    <!-- EDIT BUTTON -->
+                    <button
+                            type="button"
+                            class="px-3 py-1.5 rounded-md bg-blue-600 text-white text-sm
+                   hover:bg-blue-700 transition-colors
+                   edit-teacher-btn"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editTeacherModal"
 
-                    Edit
-                </button>
+                            data-id="<%= teacher.getId() %>"
+                            data-username="<%= teacher.getUsername() %>"
+                            data-name="<%= teacher.getName() %>"
+                            data-course-id="<%= teacher.getCourse() != null ? teacher.getCourse().getId() : "" %>"
+                            data-semester-id="<%= teacher.getSemester() != null ? teacher.getSemester().getId() : "" %>"
+                            data-subject-id="<%= teacher.getSubject() != null ? teacher.getSubject().getId() : "" %>">
+                        Edit
+                    </button>
 
-                <a href="${pageContext.request.contextPath}/admin/teachers/?showSubjects=true&teacherId=<%= teacher.getId() %>"
-                   class="text-indigo-600 hover:text-indigo-900">
-                    Show Subjects
-                </a>
+                    <!-- SHOW SUBJECTS BUTTON -->
+                    <a
+                            href="<%= request.getContextPath() %>/admin/teachers/?showSubjects=true&teacherId=<%= teacher.getId() %>"
+                            class="px-3 py-1.5 rounded-md bg-indigo-600 text-white text-sm
+                   hover:bg-indigo-700 transition-colors
+                   inline-flex items-center">
+                        Show Subjects
+                    </a>
+
+                    <!-- DELETE BUTTON -->
+                    <form
+                            action="<%= request.getContextPath() %>/admin/teachers/delete"
+                            method="post"
+                            class="inline"
+                            onsubmit="return confirm('Delete this teacher? Assigned subjects will be unassigned.');">
+
+                        <input type="hidden" name="teacherId" value="<%= teacher.getId() %>">
+
+                        <button
+                                type="submit"
+                                class="px-3 py-1.5 rounded-md bg-red-600 text-white text-sm
+                       hover:bg-red-700 transition-colors">
+                            Delete
+                        </button>
+                    </form>
+
+                </div>
             </td>
         </tr>
         <% }
