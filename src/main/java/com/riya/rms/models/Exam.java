@@ -8,7 +8,6 @@ public class Exam {
     private int courseId;
     private int semesterId;
     private String courseName;
-    private int fullMarks;
     // Optional (for views)
     private String courseCode;
     private String semesterName;
@@ -72,13 +71,6 @@ public class Exam {
         this.semesterId = semesterId;
     }
 
-    public int getFullMarks() {
-        return fullMarks;
-    }
-
-    public void setFullMarks(int fullMarks) {
-        this.fullMarks = fullMarks;
-    }
 
     public String getCourseCode() {
         return courseCode;

@@ -27,7 +27,6 @@ public class DeleteTeacher extends HttpServlet {
             userRepo.deleteById(teacherId);
         }
 
-        // PRG pattern
         resp.sendRedirect(req.getContextPath() + "/admin/teachers/");
     }
 }

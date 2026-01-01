@@ -23,9 +23,8 @@ public class StudentExam extends HttpServlet {
             throws ServletException, IOException {
 
         User student = (User) req.getSession().getAttribute("user");
-    
 
-        String pathInfo = req.getPathInfo(); // e.g., /123
+        String pathInfo = req.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             resp.sendRedirect(req.getContextPath() + "/student/dashboard");
             return;
@@ -43,23 +42,51 @@ public class StudentExam extends HttpServlet {
         ExamRepository examRepo = new ExamRepository(con);
 
         try {
-            Exam exam = examRepo.findByIdForStudent(examId, student.getId()); // New secure method recommended
+            Exam exam = examRepo.findByIdForStudent(examId, student.getId());
             if (exam == null) {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Exam not found or not accessible.");
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            List<StudentSubjectMarkDTO> marks = examRepo.findMarksForExamAndStudent(examId, student.getId());
+            List<StudentSubjectMarkDTO> marks =
+                    examRepo.findNumericMarksheetForStudent(examId, student.getId());
+
+            double totalFull = 0;
+            double totalObtained = 0;
+            boolean isPassed = true;
+
+            for (StudentSubjectMarkDTO m : marks) {
+
+                if (m.getFullMarks() != null) {
+                    totalFull += m.getFullMarks();
+                }
+
+                if (m.getMarksObtained() == null || m.getPassMarks() == null) {
+                    isPassed = false;
+                    continue;
+                }
+
+                totalObtained += m.getMarksObtained();
+
+                if (m.getMarksObtained() < m.getPassMarks()) {
+                    isPassed = false;
+                }
+            }
+
 
             req.setAttribute("exam", exam);
             req.setAttribute("marks", marks);
+            req.setAttribute("totalFull", totalFull);
+            req.setAttribute("totalObtained", totalObtained);
+            req.setAttribute("isPassed", isPassed);
+            req.setAttribute("student", student);
 
-            req.getRequestDispatcher("/WEB-INF/student/exam-detail.jsp").forward(req, resp);
+            req.getRequestDispatcher("/WEB-INF/student/exam-detail.jsp")
+                    .forward(req, resp);
 
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("error", "Unable to load results. Please try again later.");
-            req.getRequestDispatcher("/WEB-INF/student/exam-detail.jsp").forward(req, resp);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

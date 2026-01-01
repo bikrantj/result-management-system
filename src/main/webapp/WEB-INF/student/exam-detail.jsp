@@ -1,75 +1,130 @@
-<%@ page import="com.riya.rms.models.Exam" %>
 <%@ page import="com.riya.rms.models.StudentSubjectMarkDTO" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.riya.rms.models.Exam" %>
+<%@ page import="com.riya.rms.models.User" %>
+
 <%
     Exam exam = (Exam) request.getAttribute("exam");
-    List<StudentSubjectMarkDTO> marks = (List<StudentSubjectMarkDTO>) request.getAttribute("marks");
-    request.setAttribute("activeMenu", "dashboard");
+    User student = (User) request.getAttribute("student");
+    List<StudentSubjectMarkDTO> marks =
+            (List<StudentSubjectMarkDTO>) request.getAttribute("marks");
+
+    double totalFull = (double) request.getAttribute("totalFull");
+    double totalObtained = (double) request.getAttribute("totalObtained");
+    boolean isPassed = (boolean) request.getAttribute("isPassed");
 %>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= exam.getName() %> - Results</title>
+    <title><%= exam.getName() %> - Mark Sheet</title>
     <%@ include file="/WEB-INF/shared/head.jsp" %>
+    <script src="<%= request.getContextPath() %>/js/html2pdf.bundle.min.js"></script>
+    <script>
+        function downloadPDF() {
+            const element = document.getElementById("marksheet");
+
+            const options = {
+                margin: 0.5,
+                filename: 'Result_<%= exam.getName().replaceAll(" ", "_") %>.pdf',
+                image: {type: 'jpeg', quality: 0.98},
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'a4',
+                    orientation: 'portrait'
+                }
+            };
+
+            html2pdf().set(options).from(element).save();
+        }
+    </script>
 </head>
 
-<body class="bg-gray-50 font-sans antialiased">
+<body class="bg-gray-50 font-serif p-8">
+<div class="flex flex-col gap-6 items-center">
+    <button onclick="downloadPDF()"
+            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Download Report (PDF)
+    </button>
 
-<div class="flex min-h-screen">
-    <jsp:include page="/WEB-INF/shared/sidebar-student.jsp"/>
+    <div id="marksheet"
+         class="max-w-5xl mx-auto bg-white p-10 shadow border">
 
-    <main class="flex-1 p-6">
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">
-                <%= exam.getName() %> Results
-            </h1>
-            <p class="text-gray-600">
-                <%= exam.getCourseName() %> - <%= exam.getSemesterName() %>
-            </p>
-        </div>
+        <h2 class="text-center text-xl font-bold mb-2">
+            Kantipur City College
+        </h2>
+        <p class="text-center text-sm mb-6">
+            <%= exam.getCourseName() %> - Semester <%= exam.getSemesterName() %>
+        </p>
 
-        <% if (exam.isPublished()) { %>
+        <h3 class="text-center text-lg font-semibold mb-6">
+            <%= exam.getName() %> - Grade / Mark Sheet
+        </h3>
 
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-4 text-left text-sm font-medium text-gray-700">Subject</th>
-                    <th class="px-6 py-4 text-center text-sm font-medium text-gray-700">Full Marks</th>
-                    <th class="px-6 py-4 text-center text-sm font-medium text-gray-700">Obtained</th>
-                    <th class="px-6 py-4 text-center text-sm font-medium text-gray-700">Percentage</th>
-                </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                <% for (StudentSubjectMarkDTO m : marks) { %>
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 text-sm text-gray-900"><%= m.getSubjectName() %>
-                    </td>
-                    <td class="px-6 py-4 text-center text-sm text-gray-600"><%= m.getFullMarks() %>
-                    </td>
-                    <td class="px-6 py-4 text-center text-sm font-medium text-gray-900">
-                        <%= m.getMarksObtained() != null ? String.format("%.2f", m.getMarksObtained()) : "N/A" %>
-                    </td>
-                    <td class="px-6 py-4 text-center text-sm font-medium text-gray-700">
-                        <%= m.getMarksObtained() != null ?
-                                String.format("%.1f%%", (m.getMarksObtained() / m.getFullMarks()) * 100) : "N/A" %>
-                    </td>
-                </tr>
-                <% } %>
-                </tbody>
-            </table>
-        </div>
+        <p class="text-center mb-6 text-lg font-semibold
+          <%= isPassed ? "text-green-700" : "text-red-700" %>">
+            <%= isPassed ? "Congratulations! You have Passed." : "Result: Failed" %>
+        </p>
 
-        <% } else { %>
-        <div class="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-xl text-gray-600">Results for this exam have not been published yet.</p>
-            <p class="mt-2 text-gray-500">Please check back later.</p>
-        </div>
-        <% } %>
+        <p>
+            Student Name: <%= student.getName() %>
+        </p>
 
-    </main>
+        <table class="w-full border-collapse border">
+            <thead>
+            <tr class="bg-gray-100">
+                <th class="border px-3 py-2">S.N</th>
+                <th class="border px-3 py-2 text-left">Subject</th>
+                <th class="border px-3 py-2">Full Marks</th>
+                <th class="border px-3 py-2">Pass Marks</th>
+                <th class="border px-3 py-2">Marks Obtained</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% int i = 1;
+                for (StudentSubjectMarkDTO m : marks) { %>
+            <tr>
+                <td class="border px-3 py-2 text-center"><%= i++ %>
+                </td>
+                <td class="border px-3 py-2"><%= m.getSubjectName() %>
+                </td>
+                <td class="border px-3 py-2 text-center"><%= m.getFullMarks() %>
+                </td>
+                <td class="border px-3 py-2 text-center">
+                    <%= m.getPassMarks() != null ? m.getPassMarks() : "—" %>
+                </td>
+
+                <td class="border px-3 py-2 text-center
+    <%= (m.getMarksObtained() != null
+          && m.getPassMarks() != null
+          && m.getMarksObtained() < m.getPassMarks())
+        ? "text-red-700 font-semibold"
+        : "text-gray-800" %>">
+
+                    <%= m.getMarksObtained() != null ? m.getMarksObtained() : "—" %>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+
+            <tfoot>
+            <tr class="font-bold bg-gray-50">
+                <td colspan="2" class="border px-3 py-2 text-right">Grand Total</td>
+                <td class="border px-3 py-2 text-center"><%= totalFull %>
+                </td>
+                <td class="border px-3 py-2"></td>
+
+                <td class="border px-3 py-2 text-center"><%= totalObtained %>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+
+    </div>
 </div>
-
 </body>
 </html>

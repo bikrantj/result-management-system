@@ -11,7 +11,6 @@
         <th>Name</th>
         <th>Course</th>
         <th>Semester</th>
-        <th>Full Marks</th>
         <th>Status</th>
         <th>Actions</th>
     </tr>
@@ -27,9 +26,6 @@
         </td>
         <td><%= e.getSemesterName() %>
         </td>
-        <td><%= e.getFullMarks() %>
-        </td>
-
         <!-- Status Chip -->
         <td>
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium

@@ -4,7 +4,7 @@ public class StudentSubjectMarkDTO {
     private String subjectName;
     private Double fullMarks;
     private Double marksObtained;
-    private Double passMarks = 40.0; // Default; adjust as needed
+    private Double passMarks; // Default; adjust as needed
 
     // Getters and Setters
     public String getSubjectName() {

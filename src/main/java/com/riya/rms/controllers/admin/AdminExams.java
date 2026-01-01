@@ -43,7 +43,6 @@ public class AdminExams extends HttpServlet {
         exam.setName(req.getParameter("name"));
         exam.setCourseId(Integer.parseInt(req.getParameter("courseId")));
         exam.setSemesterId(Integer.parseInt(req.getParameter("semesterId")));
-        exam.setFullMarks(Integer.parseInt(req.getParameter("fullMarks")));
 
         try {
             examRepo.create(exam);

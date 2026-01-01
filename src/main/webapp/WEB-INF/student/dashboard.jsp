@@ -50,10 +50,7 @@
                 </div>
 
                 <div class="space-y-2 text-sm text-gray-600">
-                    <p>
-                        <span class="font-medium text-gray-700">Subject:</span>
-                        <%= exam.getSubjectName() %>
-                    </p>
+
                     <p>
                         <span class="font-medium text-gray-700">Course:</span>
                         <%= exam.getCourseName() %>
@@ -62,10 +59,7 @@
                         <span class="font-medium text-gray-700">Semester:</span>
                         <%= exam.getSemesterName() %>
                     </p>
-                    <p>
-                        <span class="font-medium text-gray-700">Full Marks:</span>
-                        <%= exam.getFullMarks() %>
-                    </p>
+
                 </div>
 
                 <div class="mt-5 flex items-center text-blue-600 font-medium text-sm">

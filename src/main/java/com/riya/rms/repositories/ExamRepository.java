@@ -21,15 +21,14 @@ public class ExamRepository {
 
     public void create(Exam exam) throws SQLException {
         String sql = """
-                    INSERT INTO exams (name, course_id, semester_id, full_marks)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO exams (name, course_id, semester_id)
+                    VALUES (?, ?, ?)
                 """;
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, exam.getName());
             ps.setInt(2, exam.getCourseId());
             ps.setInt(3, exam.getSemesterId());
-            ps.setInt(4, exam.getFullMarks());
             ps.executeUpdate();
         }
     }
@@ -37,7 +36,7 @@ public class ExamRepository {
     public Exam findById(int examId, int teacherId) {
 
         String sql = """
-                    SELECT e.id, e.name, e.full_marks,
+                    SELECT e.id, e.name,
                            e.course_id, e.semester_id,
                            c.name AS course_name,
                            c.code AS course_code,
@@ -46,7 +45,7 @@ public class ExamRepository {
                     FROM exams e
                     JOIN courses c ON c.id = e.course_id
                     JOIN semesters s ON s.id = e.semester_id
-                    JOIN subjects sub 
+                    JOIN subjects sub
                         ON sub.semester_id = e.semester_id
                        AND sub.assigned_teacher_id = ?
                     WHERE e.id = ?
@@ -61,7 +60,6 @@ public class ExamRepository {
                 Exam e = new Exam();
                 e.setId(rs.getInt("id"));
                 e.setName(rs.getString("name"));
-                e.setFullMarks(rs.getInt("full_marks"));
                 e.setCourseId(rs.getInt("course_id"));
                 e.setSemesterId(rs.getInt("semester_id"));
                 e.setCourseName(rs.getString("course_name"));
@@ -82,7 +80,6 @@ public class ExamRepository {
                 SELECT
                     e.id,
                     e.name,
-                    e.full_marks,
                     e.is_published,
                 
                     c.id AS course_id,
@@ -106,7 +103,6 @@ public class ExamRepository {
                 Exam e = new Exam();
                 e.setId(rs.getInt("id"));
                 e.setName(rs.getString("name"));
-                e.setFullMarks(rs.getInt("full_marks"));
                 e.setPublished(rs.getBoolean("is_published"));
 
                 e.setCourseId(rs.getInt("course_id"));
@@ -132,7 +128,7 @@ public class ExamRepository {
     public List<Exam> findAllForTeacher(int teacherId) {
 
         String sql = """
-                    SELECT DISTINCT e.id, e.name, e.course_id, e.semester_id, e.full_marks,
+                    SELECT DISTINCT e.id, e.name, e.course_id, e.semester_id,
                                     c.name AS course_name, c.code AS course_code,
                                     s.name AS semester_name
                     FROM exams e
@@ -155,7 +151,6 @@ public class ExamRepository {
                 e.setName(rs.getString("name"));
                 e.setCourseId(rs.getInt("course_id"));
                 e.setSemesterId(rs.getInt("semester_id"));
-                e.setFullMarks(rs.getInt("full_marks"));
                 e.setCourseName(rs.getString("course_name"));
                 e.setCourseCode(rs.getString("course_code"));
                 e.setSemesterName(rs.getString("semester_name"));
@@ -213,43 +208,51 @@ public class ExamRepository {
         return list;
     }
 
-    public List<Exam> findExamsForStudent(int studentId) throws SQLException {
+    public List<Exam> findExamsForStudent(int studentId) throws Exception {
+
         String sql = """
-                SELECT DISTINCT e.id, e.name, e.full_marks, e.is_published,
-                       c.name AS course_name, sem.name AS semester_name,
-                       sub.name AS subject_name
-                FROM exams e
-                JOIN semesters sem ON e.semester_id = sem.id
-                JOIN courses c ON e.course_id = c.id
-                JOIN student_enrollments se ON se.current_semester_id = sem.id
-                JOIN subjects sub ON sub.semester_id = sem.id
-                WHERE se.student_id = ?
-                ORDER BY e.created_at DESC
+                    SELECT DISTINCT
+                        e.id,
+                        e.name,
+                        e.date,
+                
+                        e.is_published,
+                        c.name AS course_name,
+                        s.name AS semester_name
+                    FROM exams e
+                    JOIN courses c ON e.course_id = c.id
+                    JOIN semesters s ON e.semester_id = s.id
+                    JOIN student_enrollments se ON se.course_id = e.course_id
+                    WHERE se.student_id = ?
+                    ORDER BY e.created_at DESC
                 """;
 
         List<Exam> exams = new ArrayList<>();
+
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, studentId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Exam exam = new Exam();
-                    exam.setId(rs.getInt("id"));
-                    exam.setName(rs.getString("name"));
-                    exam.setFullMarks(rs.getInt("full_marks"));
-                    exam.setPublished(rs.getBoolean("is_published"));
-                    exam.setCourseName(rs.getString("course_name"));
-                    exam.setSemesterName(rs.getString("semester_name"));
-                    exam.setSubjectName(rs.getString("subject_name"));
-                    exams.add(exam);
-                }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Exam exam = new Exam();
+                exam.setId(rs.getInt("id"));
+                exam.setName(rs.getString("name"));
+//                exam.setDate(rs.getDate("date"));
+                exam.setPublished(rs.getBoolean("is_published"));
+                exam.setCourseName(rs.getString("course_name"));
+                exam.setSemesterName(rs.getString("semester_name"));
+
+                exams.add(exam);
             }
         }
+
         return exams;
     }
 
+
     public Exam findByIdForStudent(int examId, int studentId) throws SQLException {
         String sql = """
-                SELECT e.id, e.name, e.full_marks, e.is_published, e.date,
+                SELECT e.id, e.name,  e.is_published, e.date,
                        c.name AS course_name, sem.name AS semester_name
                 FROM exams e
                 JOIN semesters sem ON e.semester_id = sem.id
@@ -266,7 +269,6 @@ public class ExamRepository {
                     Exam exam = new Exam();
                     exam.setId(rs.getInt("id"));
                     exam.setName(rs.getString("name"));
-                    exam.setFullMarks(rs.getInt("full_marks"));
                     exam.setPublished(rs.getBoolean("is_published"));
                     // set date if needed
                     exam.setCourseName(rs.getString("course_name"));
@@ -278,38 +280,46 @@ public class ExamRepository {
         return null;
     }
 
-    public List<StudentSubjectMarkDTO> findMarksForExamAndStudent(int examId, int studentId) throws SQLException {
+    public List<StudentSubjectMarkDTO> findMarksForExamAndStudent(int examId, int studentId)
+            throws Exception {
+
         String sql = """
-                SELECT sub.name AS subject_name,
-                       e.full_marks,
-                       m.marks_obtained
-                FROM exams e
-                JOIN semesters sem ON e.semester_id = sem.id
-                JOIN subjects sub ON sub.semester_id = sem.id
-                LEFT JOIN marks m ON m.exam_id = e.id 
-                                 AND m.student_id = ? 
-                                 AND m.subject_id = sub.id
-                WHERE e.id = ?
-                ORDER BY sub.name
+                    SELECT
+                        sub.name AS subject_name,
+                        m.marks_obtained,
+                        m.total_marks
+                    FROM subjects sub
+                    LEFT JOIN marks m
+                        ON m.subject_id = sub.id
+                       AND m.exam_id = ?
+                       AND m.student_id = ?
+                    WHERE sub.semester_id = (
+                        SELECT semester_id FROM exams WHERE id = ?
+                    )
+                    ORDER BY sub.name
                 """;
 
         List<StudentSubjectMarkDTO> list = new ArrayList<>();
+
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, studentId);
-            ps.setInt(2, examId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    StudentSubjectMarkDTO dto = new StudentSubjectMarkDTO();
-                    dto.setSubjectName(rs.getString("subject_name"));
-                    dto.setFullMarks(rs.getDouble("full_marks"));
-                    dto.setMarksObtained(rs.getObject("marks_obtained") != null ?
-                            rs.getDouble("marks_obtained") : null);
-                    list.add(dto);
-                }
+            ps.setInt(1, examId);
+            ps.setInt(2, studentId);
+            ps.setInt(3, examId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                StudentSubjectMarkDTO dto = new StudentSubjectMarkDTO();
+                dto.setSubjectName(rs.getString("subject_name"));
+                dto.setMarksObtained(rs.getDouble("marks_obtained"));
+                dto.setFullMarks(rs.getDouble("total_marks"));
+
+                list.add(dto);
             }
         }
+
         return list;
     }
+
 
     public int getSubjectId(int examId, int teacherId) throws SQLException {
         String sql = """
@@ -342,20 +352,64 @@ public class ExamRepository {
         return -1; // Not found or not accessible to this teacher
     }
 
-    public void saveMarks(int examId, int subjectId, int studentId, double marksObtained) throws SQLException {
-        String sql = "INSERT INTO marks (exam_id, student_id, subject_id, marks_obtained, total_marks) " +
-                "VALUES (?, ?, ?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE marks_obtained = VALUES(marks_obtained)";
+    public StudentSubjectMarkDTO findSubjectMarkingScheme(
+            int examId, int subjectId) throws SQLException {
+
+        String sql = """
+                    SELECT
+                        m.total_marks,
+                        m.pass_marks
+                    FROM marks m
+                    WHERE m.exam_id = ?
+                      AND m.subject_id = ?
+                    LIMIT 1
+                """;
+
+        StudentSubjectMarkDTO dto = new StudentSubjectMarkDTO();
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, examId);
+            ps.setInt(2, subjectId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                System.out.println("Full marks found: " + rs.getDouble("total_marks"));
+                dto.setFullMarks(rs.getDouble("total_marks"));
+                dto.setPassMarks(rs.getDouble("pass_marks"));
+                return dto;
+            }
+        }
+        return dto; // not yet entered
+    }
+
+    public void saveMarks(
+            int examId,
+            int subjectId,
+            int studentId,
+            double marksObtained,
+            double totalMarks,
+            double passMarks) throws SQLException {
+
+        String sql = """
+                    INSERT INTO marks
+                    (exam_id, student_id, subject_id, marks_obtained, total_marks, pass_marks)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        marks_obtained = VALUES(marks_obtained),
+                        total_marks = VALUES(total_marks),
+                        pass_marks = VALUES(pass_marks)
+                """;
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, examId);
             ps.setInt(2, studentId);
             ps.setInt(3, subjectId);
             ps.setDouble(4, marksObtained);
-            ps.setDouble(5, 100.00); // Or use exam.getFullMarks() if passed
+            ps.setDouble(5, totalMarks);
+            ps.setDouble(6, passMarks);
             ps.executeUpdate();
         }
     }
+
 
     public boolean publishExam(int examId) throws SQLException {
         String sql = "UPDATE exams SET is_published = TRUE WHERE id = ? AND is_published = FALSE";
@@ -366,4 +420,51 @@ public class ExamRepository {
             return rowsAffected > 0;
         }
     }
+
+    public List<StudentSubjectMarkDTO> findNumericMarksheetForStudent(
+            int examId, int studentId) throws SQLException {
+
+        String sql = """
+                    SELECT
+                        sub.name AS subject_name,
+                        m.total_marks AS full_marks,
+                        m.pass_marks,
+                        m.marks_obtained
+                    FROM exams e
+                    JOIN subjects sub
+                        ON sub.semester_id = e.semester_id
+                    LEFT JOIN marks m
+                        ON m.exam_id = e.id
+                       AND m.subject_id = sub.id
+                       AND m.student_id = ?
+                    WHERE e.id = ?
+                    ORDER BY sub.name
+                """;
+
+        List<StudentSubjectMarkDTO> list = new ArrayList<>();
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            ps.setInt(2, examId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                StudentSubjectMarkDTO dto = new StudentSubjectMarkDTO();
+                dto.setSubjectName(rs.getString("subject_name"));
+
+                Double fullMarks = rs.getObject("full_marks", Double.class);
+                Double passMarks = rs.getObject("pass_marks", Double.class);
+                Double obtained = rs.getObject("marks_obtained", Double.class);
+
+                dto.setFullMarks(fullMarks);
+                dto.setPassMarks(passMarks);   // ✅ IMPORTANT
+                dto.setMarksObtained(obtained);
+
+                list.add(dto);
+            }
+        }
+        return list;
+    }
+
+
 }

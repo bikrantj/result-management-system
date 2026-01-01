@@ -67,7 +67,6 @@ CREATE TABLE exams
     id           INT PRIMARY KEY AUTO_INCREMENT,
     name         VARCHAR(100) NOT NULL, /* Mid Term, Final Board */
     date         DATE,
-    full_marks   INT          NOT NULL,
     is_published BOOLEAN   DEFAULT FALSE,
     course_id    INT,
     semester_id  INT,
@@ -86,7 +85,8 @@ CREATE TABLE marks
     student_id     INT,
     subject_id     INT,
     marks_obtained DECIMAL(5, 2),
-    total_marks    DECIMAL(5, 2) DEFAULT 100.00,
+    total_marks    DECIMAL(5, 2) NOT NULL,
+    pass_marks     DECIMAL(5, 2) NOT NULL,
     FOREIGN KEY (exam_id) REFERENCES exams (id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES subjects (id) ON DELETE CASCADE,

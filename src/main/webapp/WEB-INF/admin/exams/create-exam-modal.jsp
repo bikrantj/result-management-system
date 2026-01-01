@@ -62,18 +62,6 @@
                         </select>
                     </div>
 
-                    <!-- Full Marks -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Full Marks
-                        </label>
-                        <input type="number" name="fullMarks" required min="1"
-                               class="w-full px-4 py-3 border rounded-xl"
-                               placeholder="100">
-                        <p class="text-xs text-gray-500 mt-1">
-                            Same full marks will apply to all subjects
-                        </p>
-                    </div>
 
                 </div>
 

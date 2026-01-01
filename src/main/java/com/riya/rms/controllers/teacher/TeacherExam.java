@@ -3,6 +3,7 @@ package com.riya.rms.controllers.teacher;
 import com.riya.rms.db.DBConnection;
 import com.riya.rms.models.Exam;
 import com.riya.rms.models.StudentMarkDTO;
+import com.riya.rms.models.StudentSubjectMarkDTO;
 import com.riya.rms.models.User;
 import com.riya.rms.repositories.ExamRepository;
 import com.riya.rms.utils.Navigator;
@@ -59,11 +60,27 @@ public class TeacherExam extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Retruning students marks for exam ID: " + examId + ", count: " + students.size());
-        for (StudentMarkDTO s : students) {
-            System.out.println("Student: " + s.getStudentName() + ", Marks: " + s.getMarks());
+        int subjectId = 0;
+        try {
+            subjectId = examRepo.getSubjectId(examId, teacherId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("HELLO" + subjectId);
+
+        StudentSubjectMarkDTO scheme =
+                null;
+        try {
+            scheme = examRepo.findSubjectMarkingScheme(examId, subjectId);
+            System.out.println("Scheme loaded: " + scheme.getFullMarks());
+        } catch (SQLException e) {
+            System.out.println("Scheme loaded failed: ");
+            throw new RuntimeException(e);
         }
 
+        System.out.println("Scheme loaded: " + scheme.getFullMarks());
+
+        req.setAttribute("scheme", scheme);
         req.setAttribute("exam", exam);
         req.setAttribute("students", students);
         Navigator.navigateTo(Pages.TEACHER_EXAM_MARKS, req, resp);
@@ -75,45 +92,30 @@ public class TeacherExam extends HttpServlet {
 
         User teacher = (User) req.getSession().getAttribute("user");
 
+        int examId = Integer.parseInt(req.getPathInfo().substring(1));
 
-        String pathInfo = req.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/")) {
-            resp.sendRedirect(req.getContextPath() + "/teacher/dashboard");
-            return;
-        }
+        double totalMarks = Double.parseDouble(req.getParameter("totalMarks"));
+        double passMarks = Double.parseDouble(req.getParameter("passMarks"));
 
-        int examId;
-        try {
-            examId = Integer.parseInt(pathInfo.substring(1));
-        } catch (NumberFormatException e) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        if (passMarks > totalMarks) {
+            req.setAttribute("error", "Pass marks cannot exceed full marks.");
+            reload(req, resp, examId, teacher.getId());
             return;
         }
 
         Connection con = DBConnection.getConnection();
-        ExamRepository examRepo = new ExamRepository(con);
+        ExamRepository repo = new ExamRepository(con);
 
-        Exam exam = examRepo.findById(examId, teacher.getId());
-        if (exam == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
-
-        int subjectId = 0; // Implement this method
+        int subjectId;
         try {
-            subjectId = examRepo.getSubjectId(examId, teacher.getId());
+            subjectId = repo.getSubjectId(examId, teacher.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if (subjectId == -1) { // Assuming -1 indicates not found
-            req.setAttribute("error", "Subject not found for this exam.");
-            Navigator.navigateTo(Pages.TEACHER_EXAM_MARKS, req, resp);
-            return;
-        }
 
-        List<StudentMarkDTO> students = null;
+        List<StudentMarkDTO> students;
         try {
-            students = examRepo.findStudentsForExam(examId, teacher.getId());
+            students = repo.findStudentsForExam(examId, teacher.getId());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -121,90 +123,74 @@ public class TeacherExam extends HttpServlet {
         try {
             con.setAutoCommit(false);
 
-            boolean hasErrors = false;
-            StringBuilder errorMsg = new StringBuilder();
+            for (StudentMarkDTO s : students) {
+                String val = req.getParameter("marks_" + s.getStudentId());
+                double marks = (val == null || val.isBlank()) ? 0 : Double.parseDouble(val);
 
-            for (StudentMarkDTO student : students) {
-                String paramName = "marks_" + student.getStudentId();
-                String marksStr = req.getParameter(paramName);
-
-                if (marksStr == null) {
-                    continue; // Skip if no input field (unexpected)
+                if (marks > totalMarks || marks < 0) {
+                    throw new IllegalArgumentException(
+                            "Invalid marks for " + s.getStudentName());
                 }
 
-                marksStr = marksStr.trim();
-                if (marksStr.isEmpty()) {
-                    // Treat empty as absent marks (e.g., 0 or null); adjust as needed
-                    examRepo.saveMarks(examId, subjectId, student.getStudentId(), 0.0);
-                    continue;
-                }
-
-                double marks;
-                try {
-                    marks = Double.parseDouble(marksStr);
-                } catch (NumberFormatException e) {
-                    hasErrors = true;
-                    errorMsg.append("Invalid marks for student ").append(student.getStudentName()).append(". ");
-                    continue;
-                }
-
-                if (marks < 0 || marks > exam.getFullMarks()) {
-                    hasErrors = true;
-                    errorMsg.append("Marks out of range (0-").append(exam.getFullMarks())
-                            .append(") for student ").append(student.getStudentName()).append(". ");
-                    continue;
-                }
-
-                examRepo.saveMarks(examId, subjectId, student.getStudentId(), marks);
+                repo.saveMarks(
+                        examId,
+                        subjectId,
+                        s.getStudentId(),
+                        marks,
+                        totalMarks,
+                        passMarks
+                );
             }
 
-            if (hasErrors) {
-                con.rollback();
-                req.setAttribute("error", errorMsg.toString());
-            } else {
-                con.commit();
-                req.setAttribute("success", "Marks saved successfully.");
-            }
+            con.commit();
+            req.setAttribute("success", "Marks saved successfully.");
 
         } catch (Exception e) {
             try {
                 con.rollback();
             } catch (Exception ignored) {
             }
-            req.setAttribute("error", "An error occurred while saving marks: " + e.getMessage());
-        } finally {
-            try {
-                con.setAutoCommit(true);
-            } catch (Exception ignored) {
-            }
+            req.setAttribute("error", e.getMessage());
         }
 
+        reload(req, resp, examId, teacher.getId());
+    }
+
+    private void reload(HttpServletRequest req, HttpServletResponse resp,
+                        int examId, int teacherId)
+            throws ServletException, IOException {
+
+        ExamRepository repo = new ExamRepository(DBConnection.getConnection());
+
+        Exam exam = repo.findById(examId, teacherId);
+
+        List<StudentMarkDTO> students;
         try {
-            loadExamDataAndForward(req, resp, examId, teacher.getId());
+            students = repo.findStudentsForExam(examId, teacherId);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    // Helper method to avoid code duplication
-    private void loadExamDataAndForward(HttpServletRequest req, HttpServletResponse resp,
-                                        int examId, int teacherId)
-            throws ServletException, IOException, SQLException {
-
-        Connection con = DBConnection.getConnection();
-        ExamRepository examRepo = new ExamRepository(con);
-
-        Exam exam = examRepo.findById(examId, teacherId);
-        if (exam == null) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
+        int subjectId;
+        try {
+            subjectId = repo.getSubjectId(examId, teacherId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
-        List<StudentMarkDTO> students = examRepo.findStudentsForExam(examId, teacherId);
+        StudentSubjectMarkDTO scheme;
+        try {
+            scheme = repo.findSubjectMarkingScheme(examId, subjectId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         req.setAttribute("exam", exam);
         req.setAttribute("students", students);
+        req.setAttribute("scheme", scheme); // ✅ REQUIRED
 
-        req.getRequestDispatcher("/WEB-INF/teacher/exam-marks.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/teacher/exam-marks.jsp")
+                .forward(req, resp);
     }
+
 }
